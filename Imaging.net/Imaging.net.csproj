@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{592C8FC4-B880-468D-B460-B5114BE0066C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Imaging.net</RootNamespace>
+    <AssemblyName>Imaging.net</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\_Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\_Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>StrongKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BitMiracle.LibJpeg.NET">
+      <HintPath>..\Libraries\BitMiracle.LibJpeg.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants\GrayScaleMultiplier.cs" />
+    <Compile Include="CropAnchor.cs" />
+    <Compile Include="Decoders\ImageDimensionsDecoder.cs" />
+    <Compile Include="Encoders\GifEncoder.cs" />
+    <Compile Include="Encoders\JpegEncoder.cs" />
+    <Compile Include="Encoders\LZWEncoder.cs" />
+    <Compile Include="Enums\Enumerations.cs" />
+    <Compile Include="Enums\ExifPropertyTag.cs" />
+    <Compile Include="Extensions\ImageExtensions.cs" />
+    <Compile Include="Extensions\PixelFormatExtensions.cs" />
+    <Compile Include="HistogramHelper.cs" />
+    <Compile Include="ImagingUtility.cs" />
+    <Compile Include="Internal\FileHelper.cs" />
+    <Compile Include="Internal\FolderHelper.cs" />
+    <Compile Include="Internal\TemporaryFileDeleter.cs" />
+    <Compile Include="MarginsCropper.cs" />
+    <Compile Include="Internal\EndianSensitiveReader.cs" />
+    <Compile Include="ProcessingHelper.cs" />
+    <Compile Include="Processing\ColorArgument.cs" />
+    <Compile Include="Processing\DirectAccessBitmap.cs" />
+    <Compile Include="Processing\Enumerations.cs" />
+    <Compile Include="Processing\Filters\Blur.cs" />
+    <Compile Include="Processing\Filters\Brightness.cs" />
+    <Compile Include="Processing\Filters\ColorFilter.cs" />
+    <Compile Include="Processing\Filters\Contrast.cs" />
+    <Compile Include="Processing\Filters\ConvolutionMatrix.cs" />
+    <Compile Include="Processing\Filters\Emboss.cs" />
+    <Compile Include="Processing\Filters\EqualizeHistogram.cs" />
+    <Compile Include="Processing\Filters\ExactColorReplace.cs" />
+    <Compile Include="Processing\Filters\Flip.cs" />
+    <Compile Include="Processing\Filters\GammaCorrection.cs" />
+    <Compile Include="Processing\Filters\GrayScale.cs" />
+    <Compile Include="Processing\Filters\GuassianBlur.cs" />
+    <Compile Include="Processing\Filters\IImageFilter.cs" />
+    <Compile Include="Processing\Filters\Invert.cs" />
+    <Compile Include="Processing\Filters\LaplaceEdgeDetect.cs" />
+    <Compile Include="Processing\Filters\Pixellate.cs" />
+    <Compile Include="Processing\Filters\RedEyeReduction.cs" />
+    <Compile Include="Processing\Filters\ReduceTransparency.cs" />
+    <Compile Include="Processing\Filters\Saturate.cs" />
+    <Compile Include="Processing\Filters\Sharpen.cs" />
+    <Compile Include="Processing\Filters\SobelEdgeDetect.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quantizers\BaseColorCacheQuantizer.cs" />
+    <Compile Include="Quantizers\BaseColorQuantizer.cs" />
+    <Compile Include="Quantizers\ColorCaches\BaseColorCache.cs" />
+    <Compile Include="Quantizers\ColorCaches\Common\ColorModel.cs" />
+    <Compile Include="Quantizers\ColorCaches\EuclideanDistance\EuclideanDistanceColorCache.cs" />
+    <Compile Include="Quantizers\ColorCaches\IColorCache.cs" />
+    <Compile Include="Quantizers\ColorCaches\LocalitySensitiveHash\LshBucketInfo.cs" />
+    <Compile Include="Quantizers\ColorCaches\LocalitySensitiveHash\LshColorCache.cs" />
+    <Compile Include="Quantizers\ColorCaches\Octree\OctreeCacheNode.cs" />
+    <Compile Include="Quantizers\ColorCaches\Octree\OctreeColorCache.cs" />
+    <Compile Include="Quantizers\Ditherers\BaseColorDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\AtkinsonDithering.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\BaseErrorDiffusionDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\BurkesDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\FanDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\FilterLiteSierra.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\FloydSteinbergDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\JarvisJudiceNinkeDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\ShiauDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\SierraDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\StuckiDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\ErrorDiffusion\TwoRowSierraDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\IColorDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\Ordered\BaseOrderedDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\Ordered\BayerDitherer4.cs" />
+    <Compile Include="Quantizers\Ditherers\Ordered\BayerDitherer8.cs" />
+    <Compile Include="Quantizers\Ditherers\Ordered\ClusteredDotDitherer.cs" />
+    <Compile Include="Quantizers\Ditherers\Ordered\DotHalfToneDitherer.cs" />
+    <Compile Include="Quantizers\Helpers\ColorModelHelper.cs" />
+    <Compile Include="Quantizers\Helpers\FastRandom.cs" />
+    <Compile Include="Quantizers\Helpers\ImageBuffer.cs" />
+    <Compile Include="Quantizers\Helpers\Pixel.cs" />
+    <Compile Include="Quantizers\Helpers\PixelFormatUtility.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\IIndexedPixel.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\Indexed\PixelData1Indexed.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\Indexed\PixelData4Indexed.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\Indexed\PixelData8Indexed.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\INonIndexedPixel.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataArgb1555.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataArgb64.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataArgb8888.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataGray16.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataRgb48.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataRgb555.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataRgb565.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataRgb888.cs" />
+    <Compile Include="Quantizers\Helpers\Pixels\NonIndexed\PixelDataRgb8888.cs" />
+    <Compile Include="Quantizers\Helpers\PixelTransform.cs" />
+    <Compile Include="Quantizers\Helpers\QuantizationHelper.cs" />
+    <Compile Include="Quantizers\IColorQuantizer.cs" />
+    <Compile Include="Quantizers\PathProviders\IPathProvider.cs" />
+    <Compile Include="Quantizers\PathProviders\ReversedPathProvider.cs" />
+    <Compile Include="Quantizers\PathProviders\SerpentinePathProvider.cs" />
+    <Compile Include="Quantizers\PathProviders\StandardPathProvider.cs" />
+    <Compile Include="Quantizers\Quantizers\DistinctSelection\DistinctBucket.cs" />
+    <Compile Include="Quantizers\Quantizers\DistinctSelection\DistinctColorInfo.cs" />
+    <Compile Include="Quantizers\Quantizers\DistinctSelection\DistinctSelectionIEnumerableExtensions.cs" />
+    <Compile Include="Quantizers\Quantizers\DistinctSelection\DistinctSelectionQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\MedianCut\MedianCutCube.cs" />
+    <Compile Include="Quantizers\Quantizers\MedianCut\MedianCutQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\NeuQuant\NeuralColorQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\Octree\OctreeNode.cs" />
+    <Compile Include="Quantizers\Quantizers\Octree\OctreeQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\OptimalPalette\OptimalPaletteQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\Popularity\PopularityColorSlot.cs" />
+    <Compile Include="Quantizers\Quantizers\Popularity\PopularityQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\Uniform\UniformColorSlot.cs" />
+    <Compile Include="Quantizers\Quantizers\Uniform\UniformQuantizer.cs" />
+    <Compile Include="Quantizers\Quantizers\XiaolinWu\WuColorCube.cs" />
+    <Compile Include="Quantizers\Quantizers\XiaolinWu\WuColorQuantizer.cs" />
+    <Compile Include="SharedPinnedByteArray.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="StrongKey.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)\Libraries\ildasm.exe" /all /out="$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.il" "$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.dll"
+"$(MSBuildToolsPath)\ilasm.exe" /dll /key="$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.snk" "$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.il"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
