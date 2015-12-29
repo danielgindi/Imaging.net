@@ -33,11 +33,11 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    return ProcessImage24rgb(bmp, amount);
+                    return ProcessImageRgba(bmp, 3, amount);
                 case PixelFormat.Format32bppRgb:
-                    return ProcessImage32rgb(bmp, amount);
+                    return ProcessImageRgba(bmp, 4, amount);
                 case PixelFormat.Format32bppArgb:
-                    return ProcessImage32rgba(bmp, amount);
+                    return ProcessImageRgba(bmp, 4, amount);
                 case PixelFormat.Format32bppPArgb:
                     return ProcessImage32prgba(bmp, amount);
                 default:
@@ -45,46 +45,7 @@ namespace Imaging.net.Processing.Filters
             }
         }
 
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, Amount amount)
-        {
-            if (amount == null) return FilterError.MissingArgument;
-            if (amount.Value == 1f) return FilterError.OK;
-
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            int endXb = endX * (bmp.PixelFormatSize / 8);
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos1;
-            int xb, y;
-            float factor = amount.Value;
-            if (factor < 0f) factor = 0f;
-            float value;
-            int cxbl;
-
-            for (y = bmp.StartY; y < endY; y++)
-            {
-                pos1 = stride * y;
-                cxbl = pos1 + endXb;
-                for (xb = pos1 + bmp.StartX * 3; xb < cxbl; xb++)
-                {
-                    value = data[xb];
-                    value -= 127.5f;
-                    value *= factor;
-                    value += 127.5f;
-
-                    if (value > 255) value = 255; 
-                    else if (value < 0) value = 0;
-
-                    data[xb] = (byte)value;
-                }
-            }
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, Amount amount)
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, Amount amount)
         {
             if (amount == null) return FilterError.MissingArgument;
             if (amount.Value == 1f) return FilterError.OK;
@@ -103,7 +64,7 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos = stride * y + bmp.StartX * 4;
+                pos = stride * y + bmp.StartX * pixelLength;
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
@@ -131,18 +92,13 @@ namespace Imaging.net.Processing.Filters
                     else if (value < 0) value = 0;
                     data[pos + 2] = (byte)value;
 
-                    pos += 4;
+                    pos += pixelLength;
                 }
             }
 
             return FilterError.OK;
         }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, Amount amount)
-        {
-            return ProcessImage32rgb(bmp, amount);
-        }
-
+        
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, Amount amount)
         {
             if (amount == null) return FilterError.MissingArgument;

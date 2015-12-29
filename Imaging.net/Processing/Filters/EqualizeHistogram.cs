@@ -106,17 +106,49 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    if (channels == FilterColorChannel.Gray) return ProcessImage24rgb(bmp, histogramGrey, grayMultiplier);
-                    else return ProcessImage24rgb(bmp, channels, histogramR, histogramG, histogramB);
+
+                    if (channels == FilterColorChannel.Gray)
+                    {
+                        return ProcessImageRgba(bmp, 3, histogramGrey, grayMultiplier);
+                    }
+                    else
+                    {
+                        return ProcessImageRgba(bmp, 3, channels, histogramR, histogramG, histogramB);
+                    }
+
                 case PixelFormat.Format32bppRgb:
-                    if (channels == FilterColorChannel.Gray) return ProcessImage32rgb(bmp, histogramGrey, grayMultiplier);
-                    else return ProcessImage32rgb(bmp, channels, histogramR, histogramG, histogramB);
+
+                    if (channels == FilterColorChannel.Gray)
+                    {
+                        return ProcessImageRgba(bmp, 4, histogramGrey, grayMultiplier);
+                    }
+                    else
+                    {
+                        return ProcessImageRgba(bmp, 4, channels, histogramR, histogramG, histogramB);
+                    }
+
                 case PixelFormat.Format32bppArgb:
-                    if (channels == FilterColorChannel.Gray) return ProcessImage32rgba(bmp, histogramGrey, grayMultiplier);
-                    else return ProcessImage32rgba(bmp, channels, histogramR, histogramG, histogramB);
+
+                    if (channels == FilterColorChannel.Gray)
+                    {
+                        return ProcessImageRgba(bmp, 4, histogramGrey, grayMultiplier);
+                    }
+                    else
+                    {
+                        return ProcessImageRgba(bmp, 4, channels, histogramR, histogramG, histogramB);
+                    }
+
                 case PixelFormat.Format32bppPArgb:
-                    if (channels == FilterColorChannel.Gray) return ProcessImage32prgba(bmp, histogramGrey, grayMultiplier);
-                    else return ProcessImage32prgba(bmp, channels, histogramR, histogramG, histogramB);
+
+                    if (channels == FilterColorChannel.Gray)
+                    {
+                        return ProcessImage32prgba(bmp, histogramGrey, grayMultiplier);
+                    }
+                    else
+                    {
+                        return ProcessImage32prgba(bmp, channels, histogramR, histogramG, histogramB);
+                    }
+
                 default:
                     return FilterError.IncompatiblePixelFormat;
             }
@@ -154,6 +186,7 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         private double[] CalculateCDF(int[] histogram, int numberOfPixels)
         {
             double[] cdf = new double[histogram.Length];
@@ -198,81 +231,8 @@ namespace Imaging.net.Processing.Filters
             if (lowest == int.MaxValue) lowest = 0;
             return lowest;
         }
-
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
-        {
-            if (channels == FilterColorChannel.None) channels = FilterColorChannel.RGB;
-            FilterError err = CalculateHistogramsIfNeeded(bmp, channels, ref histR, ref histG, ref histB);
-            if (err != FilterError.OK) return err;
-
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-
-            int numberOfPixels = cx * cy;
-            int[] cdfR = null, cdfG = null, cdfB = null;
-            int cdfminR = 0, cdfminG = 0, cdfminB = 0;
-            if (histR != null)
-            {
-                cdfR = NormalizeCDF(CalculateCDF(histR, numberOfPixels), numberOfPixels);
-                cdfminR = FindLowestExcludingZero(cdfR);
-            }
-            if (histG != null)
-            {
-                cdfG = NormalizeCDF(CalculateCDF(histG, numberOfPixels), numberOfPixels);
-                cdfminG = FindLowestExcludingZero(cdfG);
-            }
-            if (histB != null)
-            {
-                cdfB = NormalizeCDF(CalculateCDF(histB, numberOfPixels), numberOfPixels);
-                cdfminB = FindLowestExcludingZero(cdfB);
-            }
-            double numberOfPixelsR = numberOfPixels - cdfminR;
-            double numberOfPixelsG = numberOfPixels - cdfminG;
-            double numberOfPixelsB = numberOfPixels - cdfminB;
-            int curPos;
-
-            for (y = bmp.StartY; y < endY; y++)
-            {
-                pos = stride * y + bmp.StartX * 3;
-
-                for (x = bmp.StartX; x < endX; x++)
-                {
-                    if (histR != null)
-                    {
-                        curPos = pos + 2;
-                        data[curPos] =
-                            (byte)Math.Round(
-                            (double)(((cdfR[data[curPos]] - cdfminR) / numberOfPixelsR) * 255));
-                    }
-                    if (histG != null)
-                    {
-                        curPos = pos + 1;
-                        data[curPos] =
-                            (byte)Math.Round(
-                            (double)(((cdfG[data[curPos]] - cdfminG) / numberOfPixelsG) * 255));
-                    }
-                    if (histB != null)
-                    {
-                        curPos = pos;
-                        data[curPos] =
-                            (byte)Math.Round(
-                            (double)(((cdfB[data[curPos]] - cdfminB) / numberOfPixelsB) * 255));
-                    }
-
-                    pos += 3;
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
+        
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
         {
             if (channels == FilterColorChannel.None) channels = FilterColorChannel.RGB;
             FilterError err = CalculateHistogramsIfNeeded(bmp, channels, ref histR, ref histG, ref histB);
@@ -315,7 +275,7 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos = stride * y + bmp.StartX * 4;
+                pos = stride * y + bmp.StartX * pixelLength;
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
@@ -341,16 +301,11 @@ namespace Imaging.net.Processing.Filters
                             (double)(((cdfB[data[curPos]] - cdfminB) / numberOfPixelsB) * 255));
                     }
 
-                    pos += 4;
+                    pos += pixelLength;
                 }
             }
 
             return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
-        {
-            return ProcessImage32rgb(bmp, channels, histR, histG, histB);
         }
 
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
@@ -435,94 +390,8 @@ namespace Imaging.net.Processing.Filters
 
             return FilterError.OK;
         }
-
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
-        {
-            if (histGrey == null)
-            {
-                FilterError err = HistogramHelper.CalculateHistogram(bmp, FilterColorChannel.Gray, out histGrey, grayMultiplier);
-                if (err != FilterError.OK) return err;
-            }
-
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-
-            int numberOfPixels = cx * cy;
-            int[] cdf;
-            int cdfmin = 0;
-            cdf = NormalizeCDF(CalculateCDF(histGrey, numberOfPixels), numberOfPixels);
-            cdfmin = FindLowestExcludingZero(cdf);
-
-            double numberOfPixels2 = numberOfPixels - cdfmin;
-            int value;
-
-            if (grayMultiplier == FilterGrayScaleWeight.None)
-            {
-                for (y = bmp.StartY; y < endY; y++)
-                {
-                    pos = stride * y + bmp.StartX * 3;
-
-                    for (x = bmp.StartX; x < endX; x++)
-                    {
-                        value = data[pos + 2] + data[pos + 1] + data[pos];
-                        value = (byte)(value / 3);
-                        data[pos + 2] = data[pos + 1] = data[pos] =
-                            (byte)Math.Round(
-                            (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
-
-                        pos += 3;
-                    }
-                }
-            }
-            else
-            {
-                double lumR, lumG, lumB;
-
-                if (grayMultiplier == FilterGrayScaleWeight.NaturalNTSC)
-                {
-                    lumR = GrayScaleMultiplier.NtscRed;
-                    lumG = GrayScaleMultiplier.NtscGreen;
-                    lumB = GrayScaleMultiplier.NtscBlue;
-                }
-                else if (grayMultiplier == FilterGrayScaleWeight.Natural)
-                {
-                    lumR = GrayScaleMultiplier.NaturalRed;
-                    lumG = GrayScaleMultiplier.NaturalGreen;
-                    lumB = GrayScaleMultiplier.NaturalBlue;
-                }
-                else
-                {
-                    lumR = GrayScaleMultiplier.AccurateRed;
-                    lumG = GrayScaleMultiplier.AccurateGreen;
-                    lumB = GrayScaleMultiplier.AccurateBlue;
-                }
-
-                for (y = bmp.StartY; y < endY; y++)
-                {
-                    pos = stride * y + bmp.StartX * 3;
-
-                    for (x = bmp.StartX; x < endX; x++)
-                    {
-                        value = (byte)(data[pos + 2] * lumR) + (byte)(data[pos + 1] * lumG) + (byte)(data[pos] * lumB);
-                        data[pos + 2] = data[pos + 1] = data[pos] =
-                            (byte)Math.Round(
-                            (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
-
-                        pos += 3;
-                    }
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
+        
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
         {
             if (histGrey == null)
             {
@@ -553,7 +422,7 @@ namespace Imaging.net.Processing.Filters
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos = stride * y + bmp.StartX * 4;
+                    pos = stride * y + bmp.StartX * pixelLength;
 
                     for (x = bmp.StartX; x < endX; x++)
                     {
@@ -563,7 +432,7 @@ namespace Imaging.net.Processing.Filters
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
 
-                        pos += 4;
+                        pos += pixelLength;
                     }
                 }
             }
@@ -592,7 +461,7 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos = stride * y + bmp.StartX * 4;
+                    pos = stride * y + bmp.StartX * pixelLength;
 
                     for (x = bmp.StartX; x < endX; x++)
                     {
@@ -601,19 +470,14 @@ namespace Imaging.net.Processing.Filters
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
 
-                        pos += 4;
+                        pos += pixelLength;
                     }
                 }
             }
 
             return FilterError.OK;
         }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
-        {
-            return ProcessImage32rgb(bmp, histGrey, grayMultiplier);
-        }
-
+        
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
         {
             if (histGrey == null)

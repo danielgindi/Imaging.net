@@ -71,11 +71,11 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    return ProcessImage24rgb(bmp, filter);
+                    return ProcessImageRgba(bmp, 3, filter);
                 case PixelFormat.Format32bppRgb:
-                    return ProcessImage32rgb(bmp, filter);
+                    return ProcessImageRgba(bmp, 4, filter);
                 case PixelFormat.Format32bppArgb:
-                    return ProcessImage32rgba(bmp, filter);
+                    return ProcessImageRgba(bmp, 4, filter);
                 case PixelFormat.Format32bppPArgb:
                     return ProcessImage32prgba(bmp, filter);
                 default:
@@ -83,7 +83,7 @@ namespace Imaging.net.Processing.Filters
             }
         }
 
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, ColorFilterValue filter)
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, ColorFilterValue filter)
         {
             if (filter == null) return FilterError.MissingArgument;
 
@@ -99,49 +99,7 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos = stride * y + bmp.StartX * 3;
-
-                for (x = bmp.StartX; x < endX; x++)
-                {
-                    value = (int)(data[pos] + filter.ValueB);
-                    if (value > 255) value = 255; 
-                    else if (value < 0) value = 0;
-                    data[pos] = (byte)value;
-
-                    value = (int)(data[pos + 1] + filter.ValueG);
-                    if (value > 255) value = 255;
-                    else if (value < 0) value = 0;
-                    data[pos + 1] = (byte)value;
-
-                    value = (int)(data[pos + 2] + filter.ValueR);
-                    if (value > 255) value = 255; 
-                    else if (value < 0) value = 0;
-                    data[pos + 2] = (byte)value;
-
-                    pos += 3;
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, ColorFilterValue filter)
-        {
-            if (filter == null) return FilterError.MissingArgument;
-
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-            int value;
-
-            for (y = bmp.StartY; y < endY; y++)
-            {
-                pos = stride * y + bmp.StartX * 4;
+                pos = stride * y + bmp.StartX * pixelLength;
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
@@ -160,16 +118,11 @@ namespace Imaging.net.Processing.Filters
                     else if (value < 0) value = 0;
                     data[pos + 2] = (byte)value;
 
-                    pos += 4;
+                    pos += pixelLength;
                 }
             }
 
             return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, ColorFilterValue filter)
-        {
-            return ProcessImage32rgb(bmp, filter);
         }
 
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, ColorFilterValue filter)

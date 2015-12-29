@@ -67,17 +67,18 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    return ProcessImage24rgb(bmp, gamma);
+                    return ProcessImageRgba(bmp, 3, gamma);
                 case PixelFormat.Format32bppRgb:
-                    return ProcessImage32rgb(bmp, gamma);
+                    return ProcessImageRgba(bmp, 4, gamma);
                 case PixelFormat.Format32bppArgb:
-                    return ProcessImage32rgba(bmp, gamma);
+                    return ProcessImageRgba(bmp, 4, gamma);
                 case PixelFormat.Format32bppPArgb:
                     return ProcessImage32prgba(bmp, gamma);
                 default:
                     return FilterError.IncompatiblePixelFormat;
             }
         }
+
         public static void BuildGammaArray(float gamma, out byte[] arrGamma)
         {
             if (gamma < 0.2f) gamma = 0.2f;
@@ -92,7 +93,7 @@ namespace Imaging.net.Processing.Filters
             }
         }
 
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, GammaValue gamma)
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, GammaValue gamma)
         {
             if (gamma == null) return FilterError.MissingArgument;
 
@@ -112,7 +113,7 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos = stride * y + bmp.StartX * 3;
+                pos = stride * y + bmp.StartX * pixelLength;
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
@@ -120,53 +121,13 @@ namespace Imaging.net.Processing.Filters
                     data[pos + 1] = arrGreen[data[pos + 1]];
                     data[pos + 2] = arrRed[data[pos + 2]];
 
-                    pos += 3;
+                    pos += pixelLength;
                 }
             }
 
             return FilterError.OK;
         }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, GammaValue gamma)
-        {
-            if (gamma == null) return FilterError.MissingArgument;
-
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-
-            byte[] arrRed, arrGreen, arrBlue;
-            BuildGammaArray(gamma.ValueR, out arrRed);
-            BuildGammaArray(gamma.ValueG, out arrGreen);
-            BuildGammaArray(gamma.ValueB, out arrBlue);
-
-            for (y = bmp.StartY; y < endY; y++)
-            {
-                pos = stride * y + bmp.StartX * 4;
-
-                for (x = bmp.StartX; x < endX; x++)
-                {
-                    data[pos] = arrBlue[data[pos]];
-                    data[pos + 1] = arrGreen[data[pos + 1]];
-                    data[pos + 2] = arrRed[data[pos + 2]];
-
-                    pos += 4;
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, GammaValue gamma)
-        {
-            return ProcessImage32rgb(bmp, gamma);
-        }
-
+        
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, GammaValue gamma)
         {
             if (gamma == null) return FilterError.MissingArgument;

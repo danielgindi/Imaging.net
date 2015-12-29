@@ -14,11 +14,11 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    return ProcessImage24rgb(bmp);
+                    return ProcessImageRgba(bmp, 3);
                 case PixelFormat.Format32bppRgb:
-                    return ProcessImage32rgb(bmp);
+                    return ProcessImageRgba(bmp, 4);
                 case PixelFormat.Format32bppArgb:
-                    return ProcessImage32rgba(bmp);
+                    return ProcessImageRgba(bmp, 4);
                 case PixelFormat.Format32bppPArgb:
                     return ProcessImage32prgba(bmp);
                 default:
@@ -26,7 +26,7 @@ namespace Imaging.net.Processing.Filters
             }
         }
 
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp)
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength)
         {
             int cx = bmp.Width;
             int cy = bmp.Height;
@@ -39,7 +39,7 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos = stride * y + bmp.StartX * 3;
+                pos = stride * y + bmp.StartX * pixelLength;
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
@@ -47,44 +47,11 @@ namespace Imaging.net.Processing.Filters
                     data[pos + 1] = (byte)(255 - data[pos + 1]);
                     data[pos + 2] = (byte)(255 - data[pos + 2]);
 
-                    pos += 3;
+                    pos += pixelLength;
                 }
             }
 
             return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp)
-        {
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-
-            for (y = bmp.StartY; y < endY; y++)
-            {
-                pos = stride * y + bmp.StartX * 4;
-
-                for (x = bmp.StartX; x < endX; x++)
-                {
-                    data[pos] = (byte)(255 - data[pos]);
-                    data[pos + 1] = (byte)(255 - data[pos + 1]);
-                    data[pos + 2] = (byte)(255 - data[pos + 2]);
-
-                    pos += 4;
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp)
-        {
-            return ProcessImage32rgb(bmp);
         }
 
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp)

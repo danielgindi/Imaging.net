@@ -23,11 +23,11 @@ namespace Imaging.net.Processing.Filters
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
-                    return ProcessImage24rgb(bmp, mode);
+                    return ProcessImageRgba(bmp, 3, mode);
                 case PixelFormat.Format32bppRgb:
-                    return ProcessImage32rgb(bmp, mode);
+                    return ProcessImageRgba(bmp, 4, mode);
                 case PixelFormat.Format32bppArgb:
-                    return ProcessImage32rgba(bmp, mode);
+                    return ProcessImageRgba(bmp, 4, mode);
                 case PixelFormat.Format32bppPArgb:
                     return ProcessImage32prgba(bmp, mode);
                 default:
@@ -35,7 +35,7 @@ namespace Imaging.net.Processing.Filters
             }
         }
 
-        public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, FilterGrayScaleWeight mode)
+        public FilterError ProcessImageRgba(DirectAccessBitmap bmp, int pixelLength, FilterGrayScaleWeight mode)
         {
             int cx = bmp.Width;
             int cy = bmp.Height;
@@ -50,14 +50,14 @@ namespace Imaging.net.Processing.Filters
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos = stride * y + bmp.StartX * 3;
+                    pos = stride * y + bmp.StartX * pixelLength;
 
                     for (x = bmp.StartX; x < endX; x++)
                     {
                         data[pos] = data[pos + 1] = data[pos + 2] =
                             (byte)((data[pos] + data[pos + 1] + data[pos + 2]) / 3f);
 
-                        pos += 3;
+                        pos += pixelLength;
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos = stride * y + bmp.StartX * 3;
+                    pos = stride * y + bmp.StartX * pixelLength;
 
                     for (x = bmp.StartX; x < endX; x++)
                     {
@@ -95,87 +95,14 @@ namespace Imaging.net.Processing.Filters
                             data[pos + 1] * gL +
                             data[pos + 2] * rL));
 
-                        pos += 3;
+                        pos += pixelLength;
                     }
                 }
             }
 
             return FilterError.OK;
         }
-
-        public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, FilterGrayScaleWeight mode)
-        {
-            int cx = bmp.Width;
-            int cy = bmp.Height;
-            int endX = cx + bmp.StartX;
-            int endY = cy + bmp.StartY;
-            byte[] data = bmp.Bits;
-            int stride = bmp.Stride;
-            int pos;
-            int x, y;
-
-            if (mode == FilterGrayScaleWeight.Accurate)
-            {
-                for (y = bmp.StartY; y < endY; y++)
-                {
-                    pos = stride * y + bmp.StartX * 4;
-
-                    for (x = bmp.StartX; x < endX; x++)
-                    {
-                        data[pos] = data[pos + 1] = data[pos + 2] =
-                            (byte)((data[pos] + data[pos + 1] + data[pos + 2]) / 3f);
-
-                        pos += 4;
-                    }
-                }
-            }
-            else
-            {
-                float rL = 0, gL = 0, bL = 0;
-
-                if (mode == FilterGrayScaleWeight.NaturalNTSC)
-                {
-                    rL = GrayScaleMultiplier.NtscRed;
-                    gL = GrayScaleMultiplier.NtscGreen;
-                    bL = GrayScaleMultiplier.NtscBlue;
-                }
-                else if (mode == FilterGrayScaleWeight.Natural)
-                {
-                    rL = GrayScaleMultiplier.NaturalRed;
-                    gL = GrayScaleMultiplier.NaturalGreen;
-                    bL = GrayScaleMultiplier.NaturalBlue;
-                }
-                else
-                {
-                    rL = GrayScaleMultiplier.AccurateRed;
-                    gL = GrayScaleMultiplier.AccurateGreen;
-                    bL = GrayScaleMultiplier.AccurateBlue;
-                }
-
-                for (y = bmp.StartY; y < endY; y++)
-                {
-                    pos = stride * y + bmp.StartX * 4;
-
-                    for (x = bmp.StartX; x < endX; x++)
-                    {
-                        data[pos] = data[pos + 1] = data[pos + 2] =
-                            (byte)((data[pos] * bL +
-                            data[pos + 1] * gL +
-                            data[pos + 2] * rL));
-
-                        pos += 4;
-                    }
-                }
-            }
-
-            return FilterError.OK;
-        }
-
-        public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, FilterGrayScaleWeight mode)
-        {
-            return ProcessImage32rgb(bmp, mode);
-        }
-
+        
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, FilterGrayScaleWeight mode)
         {
             int cx = bmp.Width;
