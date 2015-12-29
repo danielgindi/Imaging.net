@@ -33,7 +33,7 @@ namespace Imaging.net.Processing
     public enum FilterGrayScaleWeight
     {
         None = 0,
-        Accurate = None,
+        Simple = None,
         Natural = 1,
         NaturalNTSC = 2,
         Css = 3

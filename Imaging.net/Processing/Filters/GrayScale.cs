@@ -266,7 +266,7 @@ namespace Imaging.net.Processing.Filters
             int pos;
             int x, y;
 
-            if (mode == FilterGrayScaleWeight.Accurate)
+            if (mode == FilterGrayScaleWeight.Simple)
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
@@ -341,7 +341,7 @@ namespace Imaging.net.Processing.Filters
             int x, y;
             float preAlpha;
 
-            if (mode == FilterGrayScaleWeight.Accurate)
+            if (mode == FilterGrayScaleWeight.Simple)
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
