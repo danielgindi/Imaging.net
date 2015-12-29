@@ -177,8 +177,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)\Libraries\ildasm.exe" /all /out="$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.il" "$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.dll"
-"$(MSBuildToolsPath)\ilasm.exe" /dll /key="$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.snk" "$(SolutionDir)\Libraries\BitMiracle.LibJpeg.NET.il"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
