@@ -101,9 +101,9 @@ namespace Imaging.net.Processing.Filters
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    rIn = data[pos];
+                    bIn = data[pos];
                     gIn = data[pos + 1];
-                    bIn = data[pos + 2];
+                    rIn = data[pos + 2];
 
                     ProcessPixel(rIn, gIn, bIn, out rOut, out gOut, out bOut, adjust);
 
@@ -151,9 +151,9 @@ namespace Imaging.net.Processing.Filters
                     preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
 
-                    rIn = data[pos] / preAlpha;
+                    bIn = data[pos] / preAlpha;
                     gIn = data[pos + 1] / preAlpha;
-                    bIn = data[pos + 2] / preAlpha;
+                    rIn = data[pos + 2] / preAlpha;
 
                     ProcessPixel(rIn, gIn, bIn, out rOut, out gOut, out bOut, adjust);
 

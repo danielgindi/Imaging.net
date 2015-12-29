@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace Imaging.net.Processing.Filters
 {
@@ -152,12 +153,17 @@ namespace Imaging.net.Processing.Filters
 
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    rIn = data[pos];
+                    bIn = data[pos];
                     gIn = data[pos + 1];
-                    bIn = data[pos + 2];
+                    rIn = data[pos + 2];
 
-                    ProcessPixel(rIn, gIn, bIn, out rOut, out gOut, out bOut, rL, gL, bL, rLInv, gLInv, bLInv, adjust);
-
+                    ProcessPixel(
+                        rIn, gIn, bIn, 
+                        out rOut, out gOut, out bOut, 
+                        rL, gL, bL,
+                        rLInv, gLInv, bLInv,
+                        adjust);
+                        
                     if (rOut > 255f) rOut = 255f;
                     else if (rOut < 0f) rOut = 0f;
                     if (gOut > 255f) gOut = 255f;
@@ -233,11 +239,16 @@ namespace Imaging.net.Processing.Filters
                     preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
 
-                    rIn = data[pos] / preAlpha;
+                    bIn = data[pos] / preAlpha;
                     gIn = data[pos + 1] / preAlpha;
-                    bIn = data[pos + 2] / preAlpha;
+                    rIn = data[pos + 2] / preAlpha;
 
-                    ProcessPixel(rIn, gIn, bIn, out rOut, out gOut, out bOut, rL, gL, bL, rLInv, gLInv, bLInv, adjust);
+                    ProcessPixel(
+                        rIn, gIn, bIn,
+                        out rOut, out gOut, out bOut,
+                        rL, gL, bL,
+                        rLInv, gLInv, bLInv,
+                        adjust);
 
                     if (rOut > 255f) rOut = 255f;
                     else if (rOut < 0f) rOut = 0f;
