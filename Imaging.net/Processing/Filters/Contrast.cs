@@ -21,14 +21,29 @@ namespace Imaging.net.Processing.Filters
             params object[] args)
         {
             Amount amount = null;
+
             foreach (object arg in args)
             {
                 if (arg is Amount)
                 {
                     amount = (Amount)arg;
                 }
+                else if (arg is Single ||
+                    arg is Double)
+                {
+                    amount = new Amount(Convert.ToSingle(arg));
+                }
             }
-            if (amount == null) return FilterError.MissingArgument;
+
+            if (amount != null && amount.Value == 0f)
+            {
+                return FilterError.OK;
+            }
+
+            if (amount == null)
+            {
+                amount = new Amount(1f);
+            }
 
             switch (bmp.Bitmap.PixelFormat)
             {

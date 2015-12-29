@@ -21,20 +21,22 @@ namespace Imaging.net.Processing.Filters
             params object[] args)
         {
             FilterGrayScaleWeight mode = FilterGrayScaleWeight.Natural;
+            Amount amount = null;
+
             foreach (object arg in args)
             {
                 if (arg is FilterGrayScaleWeight)
                 {
                     mode = (FilterGrayScaleWeight)arg;
                 }
-            }
-
-            Amount amount = null;
-            foreach (object arg in args)
-            {
-                if (arg is Amount)
+                else if (arg is Amount)
                 {
                     amount = (Amount)arg;
+                }
+                else if (arg is Single ||
+                    arg is Double)
+                {
+                    amount = new Amount(Convert.ToSingle(arg));
                 }
             }
 

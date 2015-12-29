@@ -26,7 +26,8 @@ namespace Imaging.net.Processing.Filters
             params object[] args)
         {
             FilterGrayScaleWeight mode = FilterGrayScaleWeight.Natural;
-            Amount amount = new Amount(1f);
+            Amount amount = null;
+
             foreach (object arg in args)
             {
                 if (arg is FilterGrayScaleWeight)
@@ -37,6 +38,21 @@ namespace Imaging.net.Processing.Filters
                 {
                     amount = (Amount)arg;
                 }
+                else if (arg is Single ||
+                    arg is Double)
+                {
+                    amount = new Amount(Convert.ToSingle(arg));
+                }
+            }
+
+            if (amount != null && amount.Value == 0f)
+            {
+                return FilterError.OK;
+            }
+
+            if (amount == null)
+            {
+                amount = new Amount(1f);
             }
 
             switch (bmp.Bitmap.PixelFormat)
