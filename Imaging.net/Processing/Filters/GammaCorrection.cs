@@ -102,26 +102,31 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             byte[] arrRed, arrGreen, arrBlue;
             BuildGammaArray(gamma.ValueR, out arrRed);
             BuildGammaArray(gamma.ValueG, out arrGreen);
             BuildGammaArray(gamma.ValueB, out arrBlue);
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 3;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 3;
-                    data[pos2] = arrBlue[data[pos2]];
-                    data[pos2 + 1] = arrGreen[data[pos2 + 1]];
-                    data[pos2 + 2] = arrRed[data[pos2 + 2]];
+                    data[pos] = arrBlue[data[pos]];
+                    data[pos + 1] = arrGreen[data[pos + 1]];
+                    data[pos + 2] = arrRed[data[pos + 2]];
+
+                    pos += 3;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, GammaValue gamma)
         {
             if (gamma == null) return FilterError.MissingArgument;
@@ -132,30 +137,36 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             byte[] arrRed, arrGreen, arrBlue;
             BuildGammaArray(gamma.ValueR, out arrRed);
             BuildGammaArray(gamma.ValueG, out arrGreen);
             BuildGammaArray(gamma.ValueB, out arrBlue);
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    data[pos2] = arrBlue[data[pos2]];
-                    data[pos2 + 1] = arrGreen[data[pos2 + 1]];
-                    data[pos2 + 2] = arrRed[data[pos2 + 2]];
+                    data[pos] = arrBlue[data[pos]];
+                    data[pos + 1] = arrGreen[data[pos + 1]];
+                    data[pos + 2] = arrRed[data[pos + 2]];
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, GammaValue gamma)
         {
             return ProcessImage32rgb(bmp, gamma);
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, GammaValue gamma)
         {
             if (gamma == null) return FilterError.MissingArgument;
@@ -166,7 +177,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
 
@@ -174,20 +185,24 @@ namespace Imaging.net.Processing.Filters
             BuildGammaArray(gamma.ValueR, out arrRed);
             BuildGammaArray(gamma.ValueG, out arrGreen);
             BuildGammaArray(gamma.ValueB, out arrBlue);
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
 
-                    data[pos2] = (byte)(arrBlue[(byte)(data[pos2] / preAlpha)] * preAlpha);
-                    data[pos2 + 1] = (byte)(arrGreen[(byte)(data[pos2 + 1] / preAlpha)] * preAlpha);
-                    data[pos2 + 2] = (byte)(arrRed[(byte)(data[pos2 + 2] / preAlpha)] * preAlpha);
+                    data[pos] = (byte)(arrBlue[(byte)(data[pos] / preAlpha)] * preAlpha);
+                    data[pos + 1] = (byte)(arrGreen[(byte)(data[pos + 1] / preAlpha)] * preAlpha);
+                    data[pos + 2] = (byte)(arrRed[(byte)(data[pos + 2] / preAlpha)] * preAlpha);
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
     }

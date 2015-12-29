@@ -44,6 +44,7 @@ namespace Imaging.net.Processing.Filters
                     return FilterError.IncompatiblePixelFormat;
             }
         }
+
         public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, Amount amount)
         {
             if (amount == null) return FilterError.MissingArgument;
@@ -62,6 +63,7 @@ namespace Imaging.net.Processing.Filters
             if (factor < 0f) factor = 0f;
             float value;
             int cxbl;
+
             for (y = bmp.StartY; y < endY; y++)
             {
                 pos1 = stride * y;
@@ -72,12 +74,16 @@ namespace Imaging.net.Processing.Filters
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
+
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+
                     data[xb] = (byte)value;
                 }
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, Amount amount)
         {
             if (amount == null) return FilterError.MissingArgument;
@@ -89,43 +95,54 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float factor = amount.Value;
             if (factor < 0f) factor = 0f;
             float value;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    value = data[pos2];
+                    value = data[pos];
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2] = (byte)value;
-                    value = data[pos2 + 1];
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+                    data[pos] = (byte)value;
+
+                    value = data[pos + 1];
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2 + 1] = (byte)value;
-                    value = data[pos2 + 2];
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+                    data[pos + 1] = (byte)value;
+
+                    value = data[pos + 2];
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2 + 2] = (byte)value;
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+                    data[pos + 2] = (byte)value;
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, Amount amount)
         {
             return ProcessImage32rgb(bmp, amount);
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, Amount amount)
         {
             if (amount == null) return FilterError.MissingArgument;
@@ -137,44 +154,53 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
             float factor = amount.Value;
             if (factor < 0f) factor = 0f;
             float value;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
 
-                    value = data[pos2];
+                    value = data[pos];
                     value /= preAlpha;
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2] = (byte)(value * preAlpha);
-                    value = data[pos2 + 1];
+                    if (value > 255) value = 255;
+                    else if (value < 0) value = 0;
+                    data[pos] = (byte)(value * preAlpha);
+
+                    value = data[pos + 1];
                     value /= preAlpha;
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2 + 1] = (byte)(value * preAlpha);
-                    value = data[pos2 + 2];
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+                    data[pos + 1] = (byte)(value * preAlpha);
+
+                    value = data[pos + 2];
                     value /= preAlpha;
                     value -= 127.5f;
                     value *= factor;
                     value += 127.5f;
-                    if (value > 255) value = 255; else if (value < 0) value = 0;
-                    data[pos2 + 2] = (byte)(value * preAlpha);
+                    if (value > 255) value = 255; 
+                    else if (value < 0) value = 0;
+                    data[pos + 2] = (byte)(value * preAlpha);
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
     }

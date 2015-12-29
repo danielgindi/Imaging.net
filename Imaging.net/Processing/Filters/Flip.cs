@@ -46,6 +46,7 @@ namespace Imaging.net.Processing.Filters
                     return FilterError.IncompatiblePixelFormat;
             }
         }
+
         public FilterError ProcessImage24rgb(
             DirectAccessBitmap bmp,
             bool horz, bool vert)
@@ -72,6 +73,7 @@ namespace Imaging.net.Processing.Filters
 
                 pos1 = stride * y;
                 pos1flip = stride * (vert ? (endY - y + startY - 1) : y);
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
                     if (!vert && x >= halfCx) break;
@@ -92,6 +94,7 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(
             DirectAccessBitmap bmp,
             bool horz, bool vert)
@@ -141,12 +144,14 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(
             DirectAccessBitmap bmp,
             bool horz, bool vert)
         {
             return ProcessImage32rgb(bmp, horz, vert);
         }
+
         public FilterError ProcessImage32prgba(
             DirectAccessBitmap bmp,
             bool horz, bool vert)

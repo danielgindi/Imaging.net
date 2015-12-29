@@ -21,6 +21,7 @@ namespace Imaging.net.Processing.Filters
             public SourceColor(Color color) :
                 base(color) { }
         }
+
         public class DestColor : ColorArgument
         {
             public DestColor(short A, short R, short G, short B, bool includeAlpha) :
@@ -34,6 +35,7 @@ namespace Imaging.net.Processing.Filters
             public DestColor(Color color) :
                 base(color) { }
         }
+
         public FilterError ProcessImage(
             DirectAccessBitmap bmp,
             params object[] args)
@@ -59,6 +61,7 @@ namespace Imaging.net.Processing.Filters
                     return FilterError.IncompatiblePixelFormat;
             }
         }
+
         public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, SourceColor clrSource, DestColor clrDest)
         {
             if (clrSource == null || clrDest == null)
@@ -72,26 +75,31 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 3;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 3;
-                    if (clrSource.R == data[pos2 + 2] &&
-                        clrSource.G == data[pos2 + 1] &&
-                        clrSource.B == data[pos2])
+                    if (clrSource.R == data[pos + 2] &&
+                        clrSource.G == data[pos + 1] &&
+                        clrSource.B == data[pos])
                     {
-                        data[pos2 + 2] = (byte)clrDest.R;
-                        data[pos2 + 1] = (byte)clrDest.G;
-                        data[pos2] = (byte)clrDest.B;
+                        data[pos + 2] = (byte)clrDest.R;
+                        data[pos + 1] = (byte)clrDest.G;
+                        data[pos] = (byte)clrDest.B;
                     }
+
+                    pos += 3;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, SourceColor clrSource, DestColor clrDest)
         {
             if (clrSource == null || clrDest == null)
@@ -105,26 +113,31 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    if (clrSource.R == data[pos2 + 2] &&
-                        clrSource.G == data[pos2 + 1] &&
-                        clrSource.B == data[pos2])
+                    if (clrSource.R == data[pos + 2] &&
+                        clrSource.G == data[pos + 1] &&
+                        clrSource.B == data[pos])
                     {
-                        data[pos2 + 2] = (byte)clrDest.R;
-                        data[pos2 + 1] = (byte)clrDest.G;
-                        data[pos2] = (byte)clrDest.B;
+                        data[pos + 2] = (byte)clrDest.R;
+                        data[pos + 1] = (byte)clrDest.G;
+                        data[pos] = (byte)clrDest.B;
                     }
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, SourceColor clrSource, DestColor clrDest)
         {
             if (clrSource == null || clrDest == null)
@@ -138,28 +151,33 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    if ((!clrSource.IncludeAlpha || clrSource.A == data[pos2 + 3]) &&
-                        clrSource.R == data[pos2 + 2] &&
-                        clrSource.G == data[pos2 + 1] &&
-                        clrSource.B == data[pos2])
+                    if ((!clrSource.IncludeAlpha || clrSource.A == data[pos + 3]) &&
+                        clrSource.R == data[pos + 2] &&
+                        clrSource.G == data[pos + 1] &&
+                        clrSource.B == data[pos])
                     {
-                        if (clrDest.IncludeAlpha) data[pos2 + 3] = (byte)clrDest.A;
-                        data[pos2 + 2] = (byte)clrDest.R;
-                        data[pos2 + 1] = (byte)clrDest.G;
-                        data[pos2] = (byte)clrDest.B;
+                        if (clrDest.IncludeAlpha) data[pos + 3] = (byte)clrDest.A;
+                        data[pos + 2] = (byte)clrDest.R;
+                        data[pos + 1] = (byte)clrDest.G;
+                        data[pos] = (byte)clrDest.B;
                     }
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, SourceColor clrSource, DestColor clrDest)
         {
             if (clrSource == null || clrDest == null)
@@ -173,29 +191,33 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                    if ((!clrSource.IncludeAlpha || clrSource.A == data[pos2 + 3]) &&
-                        clrSource.R == (data[pos2 + 2] / preAlpha) &&
-                        clrSource.G == (data[pos2 + 1] / preAlpha) &&
-                        clrSource.B == (data[pos2] / preAlpha))
+                    if ((!clrSource.IncludeAlpha || clrSource.A == data[pos + 3]) &&
+                        clrSource.R == (data[pos + 2] / preAlpha) &&
+                        clrSource.G == (data[pos + 1] / preAlpha) &&
+                        clrSource.B == (data[pos] / preAlpha))
                     {
-                        if (clrDest.IncludeAlpha) data[pos2 + 3] = (byte)clrDest.A;
-                        data[pos2 + 2] = (byte)(clrDest.R * preAlpha);
-                        data[pos2 + 1] = (byte)(clrDest.G * preAlpha);
-                        data[pos2] = (byte)(clrDest.B * preAlpha);
+                        if (clrDest.IncludeAlpha) data[pos + 3] = (byte)clrDest.A;
+                        data[pos + 2] = (byte)(clrDest.R * preAlpha);
+                        data[pos + 1] = (byte)(clrDest.G * preAlpha);
+                        data[pos] = (byte)(clrDest.B * preAlpha);
                     }
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
     }

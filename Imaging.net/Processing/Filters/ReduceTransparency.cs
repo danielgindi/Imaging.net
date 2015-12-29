@@ -55,18 +55,17 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             int alphaByte;
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-
-                    alphaByte = data[pos2 + 3];
+                    alphaByte = data[pos + 3];
                     if (alphaByte != 0 && alphaByte != 255)
                     {
                         alphaByte = 255 - (int)Math.Round((255 - alphaByte) * transparencyMultiplier);
@@ -78,8 +77,10 @@ namespace Imaging.net.Processing.Filters
                         {
                             alphaByte = 0;
                         }
-                        data[pos2 + 3] = (byte)alphaByte;
+                        data[pos + 3] = (byte)alphaByte;
                     }
+
+                    pos += 4;
                 }
             }
 
@@ -94,17 +95,17 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha, postAlpha;
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha != 0.0f & preAlpha != 1.0f)
                     {
                         if (preAlpha > 0)
@@ -122,11 +123,13 @@ namespace Imaging.net.Processing.Filters
                             postAlpha = 0.0f;
                         }
 
-                        data[pos2] = (byte)((data[pos2] / preAlpha) * postAlpha);
-                        data[pos2 + 1] = (byte)((data[pos2 + 1] / preAlpha) * postAlpha);
-                        data[pos2 + 2] = (byte)((data[pos2 + 2] / preAlpha) * postAlpha);
-                        data[pos2 + 3] = (byte)(postAlpha * 255.0f);
+                        data[pos] = (byte)((data[pos] / preAlpha) * postAlpha);
+                        data[pos + 1] = (byte)((data[pos + 1] / preAlpha) * postAlpha);
+                        data[pos + 2] = (byte)((data[pos + 2] / preAlpha) * postAlpha);
+                        data[pos + 3] = (byte)(postAlpha * 255.0f);
                     }
+
+                    pos += 4;
                 }
             }
 

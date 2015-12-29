@@ -34,19 +34,23 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 3;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 3;
-                    data[pos2] = (byte)(255 - data[pos2]);
-                    data[pos2 + 1] = (byte)(255 - data[pos2 + 1]);
-                    data[pos2 + 2] = (byte)(255 - data[pos2 + 2]);
+                    data[pos] = (byte)(255 - data[pos]);
+                    data[pos + 1] = (byte)(255 - data[pos + 1]);
+                    data[pos + 2] = (byte)(255 - data[pos + 2]);
+
+                    pos += 3;
                 }
             }
+
             return FilterError.OK;
         }
 
@@ -58,19 +62,23 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    data[pos2] = (byte)(255 - data[pos2]);
-                    data[pos2 + 1] = (byte)(255 - data[pos2 + 1]);
-                    data[pos2 + 2] = (byte)(255 - data[pos2 + 2]);
+                    data[pos] = (byte)(255 - data[pos]);
+                    data[pos + 1] = (byte)(255 - data[pos + 1]);
+                    data[pos + 2] = (byte)(255 - data[pos + 2]);
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
 
@@ -87,22 +95,27 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
+
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                    data[pos2] = (byte)((255f - (data[pos2] / preAlpha)) * preAlpha);
-                    data[pos2 + 1] = (byte)((255f - (data[pos2 + 1] / preAlpha)) * preAlpha);
-                    data[pos2 + 2] = (byte)((255f - (data[pos2 + 2] / preAlpha)) * preAlpha);
+
+                    data[pos] = (byte)((255f - (data[pos] / preAlpha)) * preAlpha);
+                    data[pos + 1] = (byte)((255f - (data[pos + 1] / preAlpha)) * preAlpha);
+                    data[pos + 2] = (byte)((255f - (data[pos + 2] / preAlpha)) * preAlpha);
+
+                    pos += 4;
                 }
             }
+
             return FilterError.OK;
         }
     }

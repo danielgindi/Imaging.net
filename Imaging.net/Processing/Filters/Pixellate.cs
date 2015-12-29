@@ -93,7 +93,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos1, pos;
             int sizeCx = blockSize.BlockCx;
             int sizeCy = blockSize.BlockCy;
 
@@ -101,6 +101,7 @@ namespace Imaging.net.Processing.Filters
             int avgR, avgG, avgB;
             byte valR, valG, valB;
             int cntPxl = 0;
+
             for (y = bmp.StartY; y < endY; y += sizeCy)
             {
                 for (x = bmp.StartX; x < endX; x += sizeCx)
@@ -117,11 +118,11 @@ namespace Imaging.net.Processing.Filters
                             pos1 = stride * yy;
                             for (xx = x; xx < endX2; xx++)
                             {
-                                pos2 = pos1 + xx * 3;
+                                pos = pos1 + xx * 3;
 
-                                avgR += data[pos2 + 2];
-                                avgG += data[pos2 + 1];
-                                avgB += data[pos2];
+                                avgR += data[pos + 2];
+                                avgG += data[pos + 1];
+                                avgB += data[pos];
                                 cntPxl++;
                             }
                         }
@@ -131,17 +132,17 @@ namespace Imaging.net.Processing.Filters
                     }
                     else if (mode == Mode.CenterPixel)
                     {
-                        pos2 = stride * (y + (endY2 - y) / 2) + (x + (endX2 - x) / 2) * 3;
-                        valR = data[pos2 + 2];
-                        valG = data[pos2 + 1];
-                        valB = data[pos2];
+                        pos = stride * (y + (endY2 - y) / 2) + (x + (endX2 - x) / 2) * 3;
+                        valR = data[pos + 2];
+                        valG = data[pos + 1];
+                        valB = data[pos];
                     }
                     else
                     {
-                        pos2 = stride * y + x * 3;
-                        valR = data[pos2 + 2];
-                        valG = data[pos2 + 1];
-                        valB = data[pos2];
+                        pos = stride * y + x * 3;
+                        valR = data[pos + 2];
+                        valG = data[pos + 1];
+                        valB = data[pos];
                     }
 
                     for (yy = y; yy < endY2; yy++)
@@ -149,21 +150,23 @@ namespace Imaging.net.Processing.Filters
                         pos1 = stride * yy;
                         for (xx = x; xx < endX2; xx++)
                         {
-                            pos2 = pos1 + xx * 3;
+                            pos = pos1 + xx * 3;
 
-                            data[pos2 + 2] = valR;
-                            data[pos2 + 1] = valG;
-                            data[pos2] = valB;
+                            data[pos + 2] = valR;
+                            data[pos + 1] = valG;
+                            data[pos] = valB;
                         }
                     }
                 }
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, BlockSize blockSize, Mode mode)
         {
             return ProcessImage32rgba(bmp, blockSize, mode);
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, BlockSize blockSize, Mode mode)
         {
             if (blockSize == null) return FilterError.MissingArgument;
@@ -184,6 +187,7 @@ namespace Imaging.net.Processing.Filters
             int avgA, avgR, avgG, avgB;
             byte valA, valR, valG, valB;
             int cntPxl = 0;
+
             for (y = bmp.StartY; y < endY; y += sizeCy)
             {
                 for (x = bmp.StartX; x < endX; x += sizeCx)
@@ -248,6 +252,7 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, BlockSize blockSize, Mode mode)
         {
             if (blockSize == null) return FilterError.MissingArgument;

@@ -64,6 +64,7 @@ namespace Imaging.net.Processing.Filters
                 }
             }
         }
+
         public class Matrix3x3 : MatrixBase
         {
             private float[][] _Matrix = new float[][]{
@@ -95,28 +96,40 @@ namespace Imaging.net.Processing.Filters
                 this.Offset = offset;
                 this.Normalize = normalize;
             }
+
             public Matrix3x3()
             {
             }
 
-            public override int Size { get { return 3; } }
-            public override float[][] Matrix { get { return _Matrix; } }
+            public override int Size 
+            {
+                get { return 3; }
+            }
+
+            public override float[][] Matrix
+            {
+                get { return _Matrix; }
+            }
+
             public override float Divisor
             {
                 get { return _Divisor; }
                 set { _Divisor = value == 0f ? 1f : value; }
             }
+
             public override float Offset
             {
                 get { return _Offset; }
                 set { _Offset = value; }
             }
+
             public override bool Normalize
             {
                 get { return _Normalize; }
                 set { if (value == _Normalize) return; _Normalize = value; DoNormalize(); }
             }
         }
+
         public class Matrix5x5 : MatrixBase
         {
             private float[][] _Matrix = new float[][]{
@@ -168,28 +181,39 @@ namespace Imaging.net.Processing.Filters
                 this.Offset = offset;
                 this.Normalize = normalize;
             }
+
             public Matrix5x5()
             {
             }
 
-            public override int Size { get { return 5; } }
-            public override float[][] Matrix { get { return _Matrix; } }
+            public override int Size
+            { 
+                get { return 5; } 
+            }
+            public override float[][] Matrix
+            { 
+                get { return _Matrix; }
+            }
+
             public override float Divisor
             {
                 get { return _Divisor; }
                 set { _Divisor = value == 0f ? 1f : value; }
             }
+
             public override float Offset
             {
                 get { return _Offset; }
                 set { _Offset = value; }
             }
+
             public override bool Normalize
             {
                 get { return _Normalize; }
                 set { if (value == _Normalize) return; _Normalize = value; DoNormalize(); }
             }
         }
+
         public class Matrix7x7 : MatrixBase
         {
             private float[][] _Matrix = new float[][]{
@@ -241,22 +265,33 @@ namespace Imaging.net.Processing.Filters
                 this.Offset = offset;
                 this.Normalize = normalize;
             }
+
             public Matrix7x7()
             {
             }
 
-            public override int Size { get { return 7; } }
-            public override float[][] Matrix { get { return _Matrix; } }
+            public override int Size
+            {
+                get { return 7; } 
+            }
+
+            public override float[][] Matrix
+            { 
+                get { return _Matrix; } 
+            }
+
             public override float Divisor
             {
                 get { return _Divisor; }
                 set { _Divisor = value == 0f ? 1f : value; }
             }
+
             public override float Offset
             {
                 get { return _Offset; }
                 set { _Offset = value; }
             }
+
             public override bool Normalize
             {
                 get { return _Normalize; }
@@ -346,6 +381,7 @@ namespace Imaging.net.Processing.Filters
             }
             return channelClone;
         }
+
         public FilterError ProcessImage24rgb(DirectAccessBitmap bmp, MatrixBase kernel, Channel channels, AlphaWeighting alphaWeighting)
         {
             if (kernel == null) return FilterError.MissingArgument;
@@ -477,6 +513,7 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, MatrixBase kernel, Channel channels, AlphaWeighting alphaWeighting)
         {
             if (kernel == null) return FilterError.MissingArgument;
@@ -663,6 +700,7 @@ namespace Imaging.net.Processing.Filters
             }
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, MatrixBase kernel, Channel channels, AlphaWeighting alphaWeighting)
         {
             if (kernel == null) return FilterError.MissingArgument;

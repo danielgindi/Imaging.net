@@ -171,6 +171,7 @@ namespace Imaging.net.Processing.Filters
 
             return cdf;
         }
+
         private int[] NormalizeCDF(double[] cdf, int numberOfPixels)
         {
             int[] ncdf = new int[cdf.Length];
@@ -182,6 +183,7 @@ namespace Imaging.net.Processing.Filters
 
             return ncdf;
         }
+
         private int FindLowestExcludingZero(int[] cdf)
         {
             int lowest = int.MaxValue;
@@ -209,7 +211,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             int numberOfPixels = cx * cy;
@@ -237,36 +239,39 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 3;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 3;
                     if (histR != null)
                     {
-                        curPos = pos2 + 2;
+                        curPos = pos + 2;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfR[data[curPos]] - cdfminR) / numberOfPixelsR) * 255));
                     }
                     if (histG != null)
                     {
-                        curPos = pos2 + 1;
+                        curPos = pos + 1;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfG[data[curPos]] - cdfminG) / numberOfPixelsG) * 255));
                     }
                     if (histB != null)
                     {
-                        curPos = pos2;
+                        curPos = pos;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfB[data[curPos]] - cdfminB) / numberOfPixelsB) * 255));
                     }
+
+                    pos += 3;
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
         {
             if (channels == FilterColorChannel.None) channels = FilterColorChannel.RGB;
@@ -279,7 +284,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             int numberOfPixels = cx*cy;
@@ -310,40 +315,44 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
                     if (histR != null)
                     {
-                        curPos = pos2 + 2;
+                        curPos = pos + 2;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfR[data[curPos]] - cdfminR) / numberOfPixelsR) * 255));
                     }
                     if (histG != null)
                     {
-                        curPos = pos2 + 1;
+                        curPos = pos + 1;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfG[data[curPos]] - cdfminG) / numberOfPixelsG) * 255));
                     }
                     if (histB != null)
                     {
-                        curPos = pos2;
+                        curPos = pos;
                         data[curPos] =
                             (byte)Math.Round(
                             (double)(((cdfB[data[curPos]] - cdfminB) / numberOfPixelsB) * 255));
                     }
+
+                    pos += 4;
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
         {
             return ProcessImage32rgb(bmp, channels, histR, histG, histB);
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, FilterColorChannel channels, int[] histR, int[] histG, int[] histB)
         {
             if (channels == FilterColorChannel.None) channels = FilterColorChannel.RGB;
@@ -356,7 +365,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
 
@@ -385,15 +394,15 @@ namespace Imaging.net.Processing.Filters
 
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
                     if (histR != null)
                     {
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                        curPos = pos2 + 2;
+                        curPos = pos + 2;
                         data[curPos] =
                             (byte)(Math.Round(
                             (double)(((cdfR[(byte)(data[curPos] / preAlpha)] - cdfminR) / numberOfPixelsR) * 255))
@@ -401,9 +410,9 @@ namespace Imaging.net.Processing.Filters
                     }
                     if (histG != null)
                     {
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                        curPos = pos2 + 1;
+                        curPos = pos + 1;
                         data[curPos] =
                             (byte)(Math.Round(
                             (double)(((cdfG[(byte)(data[curPos] / preAlpha)] - cdfminG) / numberOfPixelsG) * 255))
@@ -411,14 +420,16 @@ namespace Imaging.net.Processing.Filters
                     }
                     if (histB != null)
                     {
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                        curPos = pos2;
+                        curPos = pos;
                         data[curPos] =
                             (byte)(Math.Round(
                             (double)(((cdfB[(byte)(data[curPos] / preAlpha)] - cdfminB) / numberOfPixelsB) * 255))
                             * preAlpha);
                     }
+
+                    pos += 4;
                 }
             }
 
@@ -439,7 +450,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             int numberOfPixels = cx * cy;
@@ -455,15 +466,17 @@ namespace Imaging.net.Processing.Filters
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 3;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 3;
-                        value = data[pos2 + 2] + data[pos2 + 1] + data[pos2];
+                        value = data[pos + 2] + data[pos + 1] + data[pos];
                         value = (byte)(value / 3);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
+
+                        pos += 3;
                     }
                 }
             }
@@ -492,20 +505,23 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 3;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 3;
-                        value = (byte)(data[pos2 + 2] * lumR) + (byte)(data[pos2 + 1] * lumG) + (byte)(data[pos2] * lumB);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+                        value = (byte)(data[pos + 2] * lumR) + (byte)(data[pos + 1] * lumG) + (byte)(data[pos] * lumB);
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
+
+                        pos += 3;
                     }
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
         {
             if (histGrey == null)
@@ -520,7 +536,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             int numberOfPixels = cx * cy;
@@ -537,15 +553,17 @@ namespace Imaging.net.Processing.Filters
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 4;
-                        value = data[pos2 + 2] + data[pos2 + 1] + data[pos2];
+                        value = data[pos + 2] + data[pos + 1] + data[pos];
                         value = (byte)(value / 3);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
+
+                        pos += 4;
                     }
                 }
             }
@@ -574,24 +592,28 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 4;
-                        value = (byte)(data[pos2 + 2] * lumR) + (byte)(data[pos2 + 1] * lumG) + (byte)(data[pos2] * lumB);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+                        value = (byte)(data[pos + 2] * lumR) + (byte)(data[pos + 1] * lumG) + (byte)(data[pos] * lumB);
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255));
+
+                        pos += 4;
                     }
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
         {
             return ProcessImage32rgb(bmp, histGrey, grayMultiplier);
         }
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, int[] histGrey, FilterGrayScaleWeight grayMultiplier)
         {
             if (histGrey == null)
@@ -606,7 +628,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
 
@@ -623,20 +645,22 @@ namespace Imaging.net.Processing.Filters
             {
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 4;
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                        value = (byte)(data[pos2 + 2] / preAlpha);
-                        value += (byte)(data[pos2 + 1] / preAlpha);
-                        value += (byte)(data[pos2] / preAlpha);
+                        value = (byte)(data[pos + 2] / preAlpha);
+                        value += (byte)(data[pos + 1] / preAlpha);
+                        value += (byte)(data[pos] / preAlpha);
                         value = (byte)(value / 3);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)(Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255))
                             * preAlpha);
+
+                        pos += 4;
                     }
                 }
             }
@@ -665,17 +689,23 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = bmp.StartY; y < endY; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = bmp.StartX; x < endX; x++)
                     {
-                        pos2 = pos1 + x * 4;
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
-                        value = (int)Math.Round((byte)(data[pos2 + 2] / preAlpha) * lumR + (byte)(data[pos2 + 1] / preAlpha) * lumG + (byte)(data[pos2] / preAlpha) * lumB);
-                        data[pos2 + 2] = data[pos2 + 1] = data[pos2] =
+
+                        value = (int)Math.Round((byte)(data[pos + 2] / preAlpha) * lumR + 
+                            (byte)(data[pos + 1] / preAlpha) * lumG + 
+                            (byte)(data[pos] / preAlpha) * lumB);
+
+                        data[pos + 2] = data[pos + 1] = data[pos] =
                             (byte)(Math.Round(
                             (double)(((cdf[value] - cdfmin) / numberOfPixels2) * 255))
                             * preAlpha);
+
+                        pos += 4;
                     }
                 }
             }

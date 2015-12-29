@@ -15,16 +15,19 @@ namespace Imaging.net.Processing.Filters
             private int _CX = 20;
             private int _CY = 20;
             private float _IntensityBarrier = 1.5f;
+
 	        public int X
 	        {
                 get { return _X; }
                 set { _X = value; }
 	        }
+
             public int Y
 	        {
                 get { return _Y; }
                 set { _Y = value; }
 	        }
+
             public int CX
 	        {
                 get { return _CX; }
@@ -34,6 +37,7 @@ namespace Imaging.net.Processing.Filters
                     if (_CX < 0) _CX = 0;
                 }
 	        }
+
             public int CY
 	        {
                 get { return _CY; }
@@ -43,11 +47,13 @@ namespace Imaging.net.Processing.Filters
                     if (_CY < 0) _CY = 0;
                 }
 	        }
+
             public float IntensityBarrier
             {
                 get { return _IntensityBarrier; }
                 set { _IntensityBarrier = value; }
             }
+
             public RedEyeRegion(int CenterX, int CenterY, int RegionCX, int RegionCY)
             {
                 this.X = CenterX - RegionCX / 2;
@@ -55,6 +61,7 @@ namespace Imaging.net.Processing.Filters
                 this.CX = RegionCX;
                 this.CY = RegionCY;
             }
+
             public RedEyeRegion(int CenterX, int CenterY, int RegionCX, int RegionCY, float IntensityBarrier)
             {
                 this.X = CenterX - RegionCX / 2;
@@ -63,6 +70,7 @@ namespace Imaging.net.Processing.Filters
                 this.CY = RegionCY;
                 this.IntensityBarrier = IntensityBarrier;
             }
+
             public RedEyeRegion(Rectangle rect)
             {
                 this.X = rect.Left;
@@ -70,6 +78,7 @@ namespace Imaging.net.Processing.Filters
                 this.CX = rect.Width;
                 this.CY = rect.Height;
             }
+
             public RedEyeRegion(Rectangle rect, float IntensityBarrier)
             {
                 this.X = rect.Left;
@@ -123,9 +132,10 @@ namespace Imaging.net.Processing.Filters
             int endX = cx + bmp.StartX;
             int endY = cy + bmp.StartY;
             int regionX, regionY, regionX2, regionY2, x, y;
-            int pos1, pos2;
+            int pos;
             byte valR, valG, valB;
             float redIntensity;
+
             foreach (RedEyeRegion region in regions)
             {
                 regionX = startX + region.X;
@@ -143,26 +153,28 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = regionY; y < regionY2; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 3;
+
                     for (x = regionX; x < regionX2; x++)
                     {
-                        pos2 = pos1 + x * 3;
-
-                        valR = data[pos2 + 2];
-                        valG = data[pos2 + 1];
-                        valB = data[pos2];
+                        valR = data[pos + 2];
+                        valG = data[pos + 1];
+                        valB = data[pos];
 
                         redIntensity = ((float)valR / ((((float)valG) + ((float)valB)) / 2.0f));
                         if (redIntensity > region.IntensityBarrier)
                         {
-                            data[pos2 + 2] = 90;
+                            data[pos + 2] = 90;
                         }
+
+                        pos += 3;
                     }
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgb(
             DirectAccessBitmap bmp,
             List<RedEyeRegion> regions)
@@ -178,9 +190,10 @@ namespace Imaging.net.Processing.Filters
             int endX = cx + bmp.StartX;
             int endY = cy + bmp.StartY;
             int regionX, regionY, regionX2, regionY2, x, y;
-            int pos1, pos2;
+            int pos;
             byte valR, valG, valB;
             float redIntensity;
+
             foreach (RedEyeRegion region in regions)
             {
                 regionX = startX + region.X;
@@ -198,32 +211,35 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = regionY; y < regionY2; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = regionX; x < regionX2; x++)
                     {
-                        pos2 = pos1 + x * 4;
-
-                        valR = data[pos2 + 2];
-                        valG = data[pos2 + 1];
-                        valB = data[pos2];
+                        valR = data[pos + 2];
+                        valG = data[pos + 1];
+                        valB = data[pos];
 
                         redIntensity = ((float)valR / ((((float)valG) + ((float)valB)) / 2.0f));
                         if (redIntensity > region.IntensityBarrier)
                         {
-                            data[pos2 + 2] = 90;
+                            data[pos + 2] = 90;
                         }
+
+                        pos += 4;
                     }
                 }
             }
 
             return FilterError.OK;
         }
+
         public FilterError ProcessImage32rgba(
             DirectAccessBitmap bmp,
             List<RedEyeRegion> regions)
         {
             return ProcessImage32rgb(bmp, regions);
         }
+
         public FilterError ProcessImage32prgba(
             DirectAccessBitmap bmp,
             List<RedEyeRegion> regions)
@@ -239,10 +255,11 @@ namespace Imaging.net.Processing.Filters
             int endX = cx + bmp.StartX;
             int endY = cy + bmp.StartY;
             int regionX, regionY, regionX2, regionY2, x, y;
-            int pos1, pos2;
+            int pos;
             byte valR, valG, valB;
             float redIntensity;
             float preAlpha;
+
             foreach (RedEyeRegion region in regions)
             {
                 regionX = startX + region.X;
@@ -260,23 +277,24 @@ namespace Imaging.net.Processing.Filters
 
                 for (y = regionY; y < regionY2; y++)
                 {
-                    pos1 = stride * y;
+                    pos = stride * y + bmp.StartX * 4;
+
                     for (x = regionX; x < regionX2; x++)
                     {
-                        pos2 = pos1 + x * 4;
-
-                        preAlpha = (float)data[pos2 + 3];
+                        preAlpha = (float)data[pos + 3];
                         if (preAlpha > 0) preAlpha = preAlpha / 255f;
 
-                        valR = (byte)(int)(data[pos2 + 2] / preAlpha);
-                        valG = (byte)(int)(data[pos2 + 1] / preAlpha);
-                        valB = (byte)(int)(data[pos2] / preAlpha);
+                        valR = (byte)(int)(data[pos + 2] / preAlpha);
+                        valG = (byte)(int)(data[pos + 1] / preAlpha);
+                        valB = (byte)(int)(data[pos] / preAlpha);
 
                         redIntensity = ((float)valR / ((((float)valG) + ((float)valB)) / 2.0f));
                         if (redIntensity > region.IntensityBarrier)
                         {
                             valR = (byte)(int)(90 * preAlpha);
                         }
+
+                        pos += 4;
                     }
                 }
             }

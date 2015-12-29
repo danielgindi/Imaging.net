@@ -64,7 +64,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             float rL = 0, gL = 0, bL = 0;
@@ -102,24 +102,30 @@ namespace Imaging.net.Processing.Filters
             byte r, g, b;
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 3;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 3;
-
-                    r = data[pos2 + 2];
-                    g = data[pos2 + 1];
-                    b = data[pos2];
+                    r = data[pos + 2];
+                    g = data[pos + 1];
+                    b = data[pos];
 
                     v = (M1_1 * r + M2_1 * g + M3_1 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 2] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 2] = (byte)v;
+
                     v = (M1_2 * r + M2_2 * g + M3_2 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 1] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 1] = (byte)v;
+
                     v = (M1_3 * r + M2_3 * g + M3_3 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos] = (byte)v;
+
+                    pos += 3;
                 }
             }
 
@@ -136,7 +142,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
 
             float rL = 0, gL = 0, bL = 0;
@@ -175,24 +181,30 @@ namespace Imaging.net.Processing.Filters
             float r, g, b;
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-
-                    r = data[pos2 + 2];
-                    g = data[pos2 + 1];
-                    b = data[pos2];
+                    r = data[pos + 2];
+                    g = data[pos + 1];
+                    b = data[pos];
 
                     v = (M1_1 * r + M2_1 * g + M3_1 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 2] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 2] = (byte)v;
+
                     v = (M1_2 * r + M2_2 * g + M3_2 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 1] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 1] = (byte)v;
+
                     v = (M1_3 * r + M2_3 * g + M3_3 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2] = (byte)v;
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos] = (byte)v;
+
+                    pos += 4;
                 }
             }
 
@@ -214,7 +226,7 @@ namespace Imaging.net.Processing.Filters
             int endY = cy + bmp.StartY;
             byte[] data = bmp.Bits;
             int stride = bmp.Stride;
-            int pos1, pos2;
+            int pos;
             int x, y;
             float preAlpha;
 
@@ -254,27 +266,33 @@ namespace Imaging.net.Processing.Filters
             float r, g, b;
             for (y = bmp.StartY; y < endY; y++)
             {
-                pos1 = stride * y;
+                pos = stride * y + bmp.StartX * 4;
+
                 for (x = bmp.StartX; x < endX; x++)
                 {
-                    pos2 = pos1 + x * 4;
-
-                    preAlpha = (float)data[pos2 + 3];
+                    preAlpha = (float)data[pos + 3];
                     if (preAlpha > 0) preAlpha = preAlpha / 255f;
                     
-                    r = data[pos2 + 2] / preAlpha;
-                    g = data[pos2 + 1] / preAlpha;
-                    b = data[pos2] / preAlpha;
+                    r = data[pos + 2] / preAlpha;
+                    g = data[pos + 1] / preAlpha;
+                    b = data[pos] / preAlpha;
 
                     v = (M1_1 * r + M2_1 * g + M3_1 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 2] = (byte)(v * preAlpha);
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 2] = (byte)(v * preAlpha);
+
                     v = (M1_2 * r + M2_2 * g + M3_2 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2 + 1] = (byte)(v * preAlpha);
+                    if (v > 255) v = 255; 
+                    else if (v < 0) v = 0;
+                    data[pos + 1] = (byte)(v * preAlpha);
+
                     v = (M1_3 * r + M2_3 * g + M3_3 * b);
-                    if (v > 255) v = 255; else if (v < 0) v = 0;
-                    data[pos2] = (byte)(v * preAlpha);
+                    if (v > 255) v = 255;
+                    else if (v < 0) v = 0;
+                    data[pos] = (byte)(v * preAlpha);
+
+                    pos += 4;
                 }
             }
 
