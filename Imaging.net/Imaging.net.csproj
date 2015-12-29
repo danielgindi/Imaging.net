@@ -82,6 +82,7 @@
     <Compile Include="Processing\Filters\ColorFilter.cs" />
     <Compile Include="Processing\Filters\Contrast.cs" />
     <Compile Include="Processing\Filters\ConvolutionMatrix.cs" />
+    <Compile Include="Processing\Filters\Sepia.cs" />
     <Compile Include="Processing\Filters\Emboss.cs" />
     <Compile Include="Processing\Filters\EqualizeHistogram.cs" />
     <Compile Include="Processing\Filters\ExactColorReplace.cs" />
