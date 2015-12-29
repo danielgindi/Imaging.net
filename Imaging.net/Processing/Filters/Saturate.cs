@@ -81,11 +81,17 @@ namespace Imaging.net.Processing.Filters
                 gL = GrayScaleMultiplier.NaturalGreen;
                 bL = GrayScaleMultiplier.NaturalBlue;
             }
+            else if (mode == FilterGrayScaleWeight.Css)
+            {
+                rL = GrayScaleMultiplier.CssRed;
+                gL = GrayScaleMultiplier.CssGreen;
+                bL = GrayScaleMultiplier.CssBlue;
+            }
             else
             {
-                rL = GrayScaleMultiplier.AccurateRed;
-                gL = GrayScaleMultiplier.AccurateGreen;
-                bL = GrayScaleMultiplier.AccurateBlue;
+                rL = GrayScaleMultiplier.SimpleRed;
+                gL = GrayScaleMultiplier.SimpleGreen;
+                bL = GrayScaleMultiplier.SimpleBlue;
             }
 
             float M1_1, M1_2, M1_3, M2_1, M2_2, M2_3, M3_1, M3_2, M3_3;
@@ -161,11 +167,17 @@ namespace Imaging.net.Processing.Filters
                 gL = GrayScaleMultiplier.NaturalGreen;
                 bL = GrayScaleMultiplier.NaturalBlue;
             }
+            else if (mode == FilterGrayScaleWeight.Css)
+            {
+                rL = GrayScaleMultiplier.CssRed;
+                gL = GrayScaleMultiplier.CssGreen;
+                bL = GrayScaleMultiplier.CssBlue;
+            }
             else
             {
-                rL = GrayScaleMultiplier.AccurateRed;
-                gL = GrayScaleMultiplier.AccurateGreen;
-                bL = GrayScaleMultiplier.AccurateBlue;
+                rL = GrayScaleMultiplier.SimpleRed;
+                gL = GrayScaleMultiplier.SimpleGreen;
+                bL = GrayScaleMultiplier.SimpleBlue;
             }
 
             float M1_1, M1_2, M1_3, M2_1, M2_2, M2_3, M3_1, M3_2, M3_3;

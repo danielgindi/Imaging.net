@@ -77,11 +77,17 @@ namespace Imaging.net.Processing.Filters
                     gL = GrayScaleMultiplier.NaturalGreen;
                     bL = GrayScaleMultiplier.NaturalBlue;
                 }
+                else if (mode == FilterGrayScaleWeight.Css)
+                {
+                    rL = GrayScaleMultiplier.CssRed;
+                    gL = GrayScaleMultiplier.CssGreen;
+                    bL = GrayScaleMultiplier.CssBlue;
+                }
                 else
                 {
-                    rL = GrayScaleMultiplier.AccurateRed;
-                    gL = GrayScaleMultiplier.AccurateGreen;
-                    bL = GrayScaleMultiplier.AccurateBlue;
+                    rL = GrayScaleMultiplier.SimpleRed;
+                    gL = GrayScaleMultiplier.SimpleGreen;
+                    bL = GrayScaleMultiplier.SimpleBlue;
                 }
 
                 for (y = bmp.StartY; y < endY; y++)
@@ -102,7 +108,7 @@ namespace Imaging.net.Processing.Filters
 
             return FilterError.OK;
         }
-        
+
         public FilterError ProcessImage32prgba(DirectAccessBitmap bmp, FilterGrayScaleWeight mode)
         {
             int cx = bmp.Width;
@@ -152,11 +158,17 @@ namespace Imaging.net.Processing.Filters
                     gL = GrayScaleMultiplier.NaturalGreen;
                     bL = GrayScaleMultiplier.NaturalBlue;
                 }
+                else if (mode == FilterGrayScaleWeight.Css)
+                {
+                    rL = GrayScaleMultiplier.CssRed;
+                    gL = GrayScaleMultiplier.CssGreen;
+                    bL = GrayScaleMultiplier.CssBlue;
+                }
                 else
                 {
-                    rL = GrayScaleMultiplier.AccurateRed;
-                    gL = GrayScaleMultiplier.AccurateGreen;
-                    bL = GrayScaleMultiplier.AccurateBlue;
+                    rL = GrayScaleMultiplier.SimpleRed;
+                    gL = GrayScaleMultiplier.SimpleGreen;
+                    bL = GrayScaleMultiplier.SimpleBlue;
                 }
 
                 for (y = bmp.StartY; y < endY; y++)

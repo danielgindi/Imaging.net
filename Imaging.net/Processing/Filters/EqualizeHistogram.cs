@@ -452,11 +452,17 @@ namespace Imaging.net.Processing.Filters
                     lumG = GrayScaleMultiplier.NaturalGreen;
                     lumB = GrayScaleMultiplier.NaturalBlue;
                 }
+                else if (grayMultiplier == FilterGrayScaleWeight.Css)
+                {
+                    lumR = GrayScaleMultiplier.CssRed;
+                    lumG = GrayScaleMultiplier.CssGreen;
+                    lumB = GrayScaleMultiplier.CssBlue;
+                }
                 else
                 {
-                    lumR = GrayScaleMultiplier.AccurateRed;
-                    lumG = GrayScaleMultiplier.AccurateGreen;
-                    lumB = GrayScaleMultiplier.AccurateBlue;
+                    lumR = GrayScaleMultiplier.SimpleRed;
+                    lumG = GrayScaleMultiplier.SimpleGreen;
+                    lumB = GrayScaleMultiplier.SimpleBlue;
                 }
 
                 for (y = bmp.StartY; y < endY; y++)
@@ -544,11 +550,17 @@ namespace Imaging.net.Processing.Filters
                     lumG = GrayScaleMultiplier.NaturalGreen;
                     lumB = GrayScaleMultiplier.NaturalBlue;
                 }
+                else if (grayMultiplier == FilterGrayScaleWeight.Css)
+                {
+                    lumR = GrayScaleMultiplier.CssRed;
+                    lumG = GrayScaleMultiplier.CssGreen;
+                    lumB = GrayScaleMultiplier.CssBlue;
+                }
                 else
                 {
-                    lumR = GrayScaleMultiplier.AccurateRed;
-                    lumG = GrayScaleMultiplier.AccurateGreen;
-                    lumB = GrayScaleMultiplier.AccurateBlue;
+                    lumR = GrayScaleMultiplier.SimpleRed;
+                    lumG = GrayScaleMultiplier.SimpleGreen;
+                    lumB = GrayScaleMultiplier.SimpleBlue;
                 }
 
                 for (y = bmp.StartY; y < endY; y++)

@@ -35,6 +35,7 @@ namespace Imaging.net.Processing
         None = 0,
         Accurate = None,
         Natural = 1,
-        NaturalNTSC = 2
+        NaturalNTSC = 2,
+        Css = 3
     }
 }

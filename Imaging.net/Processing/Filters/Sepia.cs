@@ -31,6 +31,11 @@ namespace Imaging.net.Processing.Filters
             }
             if (amount == null) return FilterError.MissingArgument;
 
+            if (amount.Value == 0f)
+            {
+                return FilterError.OK;
+            }
+
             switch (bmp.Bitmap.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
