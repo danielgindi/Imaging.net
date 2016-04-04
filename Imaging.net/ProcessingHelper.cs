@@ -22,7 +22,7 @@ namespace Imaging.net
         {
             public EncodingOptions()
             {
-                this.JpegQuality = 0.9f;
+                this.JpegQuality = 1f;
             }
 
             public float JpegQuality;

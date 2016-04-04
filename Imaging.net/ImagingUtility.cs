@@ -408,7 +408,9 @@ namespace Imaging.net
                     
                     string tempFilePath = FileHelper.CreateEmptyTempFile();
 
-                    retValue = ProcessingHelper.ProcessImageFramesToFile(imgOriginal, tempFilePath ?? destinationPath, destinationFormat, new ProcessingHelper.EncodingOptions(), delegate(Image frame)
+                    ProcessingHelper.EncodingOptions encodingOptions = EncodingOptionsWithQualityBasedOnSize(imgOriginal.Width, imgOriginal.Height);
+
+                    retValue = ProcessingHelper.ProcessImageFramesToFile(imgOriginal, tempFilePath ?? destinationPath, destinationFormat, encodingOptions, delegate(Image frame)
                     {
                         System.Drawing.Image imgProcessed = null, imgProcessBorder = null;
                         try
@@ -554,7 +556,8 @@ namespace Imaging.net
         /// <param name="imageFormat">Image format to use</param>
         public static void SaveImage(Image imageData, string imagePath, ImageFormat imageFormat)
         {
-            SaveImage(imageData, imagePath, imageFormat, new ProcessingHelper.EncodingOptions());
+            ProcessingHelper.EncodingOptions encodingOptions = EncodingOptionsWithQualityBasedOnSize(imageData.Width, imageData.Height);
+            SaveImage(imageData, imagePath, imageFormat, encodingOptions);
         }
 
         #endregion
@@ -575,7 +578,9 @@ namespace Imaging.net
 
                 string tempFilePath = FileHelper.CreateEmptyTempFile();
 
-                bool retValue = ProcessingHelper.ProcessImageFramesToFile(imgOriginal, destinationPath, destinationFormat, new ProcessingHelper.EncodingOptions(), delegate(Image frame)
+                ProcessingHelper.EncodingOptions encodingOptions = EncodingOptionsWithQualityBasedOnSize(imgOriginal.Width, imgOriginal.Height);
+
+                bool retValue = ProcessingHelper.ProcessImageFramesToFile(imgOriginal, destinationPath, destinationFormat, encodingOptions, delegate(Image frame)
                 {
                     System.Drawing.Image imgProcessed = null;
                     try
@@ -677,6 +682,26 @@ namespace Imaging.net
             }
 
             return "image/x-unknown";
+        }
+
+        private static ProcessingHelper.EncodingOptions EncodingOptionsWithQualityBasedOnSize(int width, int height)
+        {
+            ProcessingHelper.EncodingOptions encodingOptions = new ProcessingHelper.EncodingOptions();
+
+            if (width * height > 3000000)
+            {
+                encodingOptions.JpegQuality = 0.9f;
+            }
+            else if (width * height > 2000000)
+            {
+                encodingOptions.JpegQuality = 0.95f;
+            }
+            else
+            {
+                encodingOptions.JpegQuality = 1.0f;
+            }
+
+            return encodingOptions;
         }
     }
 
