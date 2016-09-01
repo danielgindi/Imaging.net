@@ -197,7 +197,9 @@ namespace Imaging.net
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+            }
         }
 
         private static Color FixTransparentBgColor(Color color, ImageFormat destinationFormat)
@@ -490,7 +492,9 @@ namespace Imaging.net
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+            }
 
             return retValue;
         }
