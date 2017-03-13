@@ -145,7 +145,7 @@ namespace Imaging.net.Decoders
                 {
                     return new ImageSize
                     {
-                        OriginalSize = new Size(width, height),
+                        RawSize = new Size(width, height),
                         Orientation = orientation
                     };
                 }
@@ -198,7 +198,7 @@ namespace Imaging.net.Decoders
 
                     return new ImageSize
                     {
-                        OriginalSize = originalSize,
+                        RawSize = originalSize,
                         Orientation = 1
                     };
                 }
@@ -334,7 +334,7 @@ namespace Imaging.net.Decoders
 
             if (width > 0 && height > 0)
             {
-                size.OriginalSize = new Size(width, height);
+                size.RawSize = new Size(width, height);
             }
 
             return size;
@@ -387,7 +387,7 @@ namespace Imaging.net.Decoders
                                 success = true;
                             }
 
-                            size.OriginalSize = originalSize;
+                            size.RawSize = originalSize;
                         }
                     }
                 }
@@ -415,7 +415,7 @@ namespace Imaging.net.Decoders
                                 success = true;
                             }
 
-                            size.OriginalSize = originalSize;
+                            size.RawSize = originalSize;
                         }
                     }
                 }
@@ -447,7 +447,7 @@ namespace Imaging.net.Decoders
                                 success = true;
                             }
 
-                            size.OriginalSize = originalSize;
+                            size.RawSize = originalSize;
                         }
                     }
                 }
@@ -490,7 +490,7 @@ namespace Imaging.net.Decoders
             {
                 using (Image image = Image.FromFile(path))
                 {
-                    size.OriginalSize = image.Size;
+                    size.RawSize = image.Size;
                 }
             }
 
@@ -557,41 +557,41 @@ namespace Imaging.net.Decoders
         {
             public static readonly ImageSize Empty = new ImageSize
             {
-                OriginalSize = Size.Empty,
+                RawSize = Size.Empty,
                 Orientation = 1,
             };
 
             /// <summary>
-            /// Returns <code>OriginalSize.IsEmpty</code>
+            /// Returns <code>RawSize.IsEmpty</code>
             /// </summary>
-            public bool IsEmpty { get { return OriginalSize.IsEmpty; } }
+            public bool IsEmpty { get { return RawSize.IsEmpty; } }
 
-            private Size _OriginalSize;
+            private Size _RawSize;
             private Size _TransformedSize;
 
-            public Size OriginalSize
+            public Size RawSize
             {
                 get
                 {
-                    return _OriginalSize;
+                    return _RawSize;
                 }
                 set
                 {
-                    _OriginalSize = value;
+                    _RawSize = value;
 
-                    if (_OriginalSize == Size.Empty)
+                    if (_RawSize == Size.Empty)
                     {
-                        _TransformedSize = _OriginalSize;
+                        _TransformedSize = _RawSize;
                     }
                     else
                     {
                         if (Orientation >= 5 && Orientation <= 8)
                         {
-                            _TransformedSize = new Size(_OriginalSize.Height, _OriginalSize.Width);
+                            _TransformedSize = new Size(_RawSize.Height, _RawSize.Width);
                         }
                         else
                         {
-                            _TransformedSize = new Size(_OriginalSize.Width, _OriginalSize.Height);
+                            _TransformedSize = new Size(_RawSize.Width, _RawSize.Height);
                         }
                     }
                 }
@@ -617,7 +617,34 @@ namespace Imaging.net.Decoders
             /// 8										Rotate 270 CW
             /// </summary>
             public int Orientation { get; set; }
-            
+
+            public bool ShouldFlipHorizontally
+            {
+                get { return Orientation == 2 || Orientation == 5 || Orientation == 7; }
+            }
+
+            public bool ShouldFlipVertically
+            {
+                get { return Orientation == 4; }
+            }
+
+            public int DegreesToRotate
+            {
+                get
+                {
+                    switch (Orientation)
+                    {
+                        default:return 0;
+
+                        case 3: return 180;
+                        case 5: return 270;
+                        case 6: return 90;
+                        case 7: return 90;
+                        case 8: return 270;
+                    }
+                }
+            }
+
             public RotateFlipType RequiredRotationToRevert
             {
                 get
