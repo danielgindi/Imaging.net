@@ -692,17 +692,13 @@ namespace Imaging.net
         {
             ProcessingHelper.EncodingOptions encodingOptions = new ProcessingHelper.EncodingOptions();
 
-            if (width * height > 3000000)
+            if (width * height > 2000000)
             {
                 encodingOptions.JpegQuality = 0.9f;
             }
-            else if (width * height > 2000000)
-            {
-                encodingOptions.JpegQuality = 0.95f;
-            }
             else
             {
-                encodingOptions.JpegQuality = 1.0f;
+                encodingOptions.JpegQuality = 0.85f;
             }
 
             return encodingOptions;
