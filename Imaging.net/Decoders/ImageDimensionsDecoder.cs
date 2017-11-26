@@ -565,42 +565,34 @@ namespace Imaging.net.Decoders
             /// Returns <code>RawSize.IsEmpty</code>
             /// </summary>
             public bool IsEmpty { get { return RawSize.IsEmpty; } }
-
-            private Size _RawSize;
+            
             private Size _TransformedSize;
 
-            public Size RawSize
-            {
-                get
-                {
-                    return _RawSize;
-                }
-                set
-                {
-                    _RawSize = value;
-
-                    if (_RawSize == Size.Empty)
-                    {
-                        _TransformedSize = _RawSize;
-                    }
-                    else
-                    {
-                        if (Orientation >= 5 && Orientation <= 8)
-                        {
-                            _TransformedSize = new Size(_RawSize.Height, _RawSize.Width);
-                        }
-                        else
-                        {
-                            _TransformedSize = new Size(_RawSize.Width, _RawSize.Height);
-                        }
-                    }
-                }
-            }
+            public Size RawSize { get; set; }
 
             public Size TransformedSize
             {
                 get
                 {
+                    if (_TransformedSize.IsEmpty)
+                    {
+                        if (RawSize == Size.Empty)
+                        {
+                            _TransformedSize = RawSize;
+                        }
+                        else
+                        {
+                            if (Orientation >= 5 && Orientation <= 8)
+                            {
+                                _TransformedSize = new Size(RawSize.Height, RawSize.Width);
+                            }
+                            else
+                            {
+                                _TransformedSize = new Size(RawSize.Width, RawSize.Height);
+                            }
+                        }
+                    }
+
                     return _TransformedSize;
                 }
             }
